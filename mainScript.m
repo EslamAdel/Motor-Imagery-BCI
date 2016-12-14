@@ -11,8 +11,8 @@ Fs = 128;
 T = 9;
 
 %% Crop the Signals
-ti = 4;
-tf = 8;
+ti = 3;
+tf = 9;
 
 %% Filter The Signals 
 FL = 7.5;
@@ -32,9 +32,26 @@ legend('left', 'right');
 %% -------------------------------------------
 
 %% ----------------- Testing Stage -------------
-%% Extract Features of testing Data 
-testFeatures = processData(x_test, ti, tf, Fs, FL, FH, filterOrder);
-
 %% Classification
 k = 3;
-testClasses = classifyTrails(trainFeatures, y_train, testFeatures, k);
+w = 128;
+x_test(:,2,:) = [];
+idx = 1;
+for i = ti*w:(tf-1)*w
+signalsWindow = x_test(i:i+w,:,:);
+filteredData = filterSignals(signalsWindow,'hanning',Fs, FL, FH, filterOrder);
+dataFeatures = extractFeatures(filteredData);
+classes = classifyTrails(trainFeatures, y_train, dataFeatures, k);
+outputData(:,idx) = classes;
+idx++;
+end
+finalClasses = zeros(140,1);
+for i = 1:140
+neg = length(find(outputData(i,:) == -1));
+pos = length(find(outputData(i,:) == 1));
+if neg > pos
+finalClasses(i) = 1;
+else 
+finalClasses(i) = 2;
+end
+end

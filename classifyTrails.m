@@ -17,9 +17,9 @@ end
 distance(idx) = 100* maxVal;
 end
 if(leftCount > rightCount)
-classVector(i) = 1;
+classVector(i) = -1;
 else
-classVector(i) = 2;
+classVector(i) = 1;
 end
 end
 end
