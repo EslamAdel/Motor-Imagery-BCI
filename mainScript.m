@@ -36,11 +36,12 @@ legend('left', 'right');
 k = 3;
 w = 128;
 x_test(:,2,:) = [];
+x_test = cropSignal(x_test, Fs, ti, tf);
+filteredSignal = filterSignals(x_test,'hanning',Fs, FL, FH, filterOrder);
 idx = 1;
-for i = ti*w:(tf-1)*w
-signalsWindow = x_test(i:i+w,:,:);
-filteredData = filterSignals(signalsWindow,'hanning',Fs, FL, FH, filterOrder);
-dataFeatures = extractFeatures(filteredData);
+for i = 1:(tf-ti-1)*Fs
+signalsWindow = filteredSignal(i:i+w,:,:);
+dataFeatures = extractFeatures(signalsWindow);
 classes = classifyTrails(trainFeatures, y_train, dataFeatures, k);
 outputData(:,idx) = classes;
 idx++;
