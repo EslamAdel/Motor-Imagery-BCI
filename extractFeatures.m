@@ -6,5 +6,7 @@ function featureSpace = extractFeatures (inSignal)
 inSignal = inSignal.^2;
 
 %Sum Now 
+[n,c,t] = size(inSignal);
 featureSpace = sum(inSignal,1);
+featureSpace = reshape(featureSpace,c,t)';
 end

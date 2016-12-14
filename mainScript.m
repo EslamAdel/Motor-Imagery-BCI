@@ -1,3 +1,6 @@
+clc;
+clear;
+close all;
 %% Loadig Dataset
 load('dataset_BCIcomp1.mat');
 
@@ -7,26 +10,31 @@ Fs = 128;
 %% Signal Length in Sec
 T = 9;
 
-%% Remove Cz channel
-x_train(:,2,:) = [];
-
 %% Crop the Signals
 ti = 4;
 tf = 8;
-x_train = cropSignal(x_train, Fs, ti, tf);
 
 %% Filter The Signals 
 FL = 7.5;
 FH = 15;
-filterOrder = 3;
-x_train = filterSignals(x_train, 'hamming', Fs, FL, FH, filterOrder);
+filterOrder = 4;
 
-%% Extract Features
-featureSpace = extractFeatures(x_train);
-
+%% --------------- Training Stage ----------
+trainFeatures = processData(x_train,ti, tf, Fs, FL, FH, filterOrder);
 %%Plot Feature Space
-left  = featureSpace(:,:,find(y_train == 1));
-right = featureSpace(:,:,find(y_train == 2));
-scatter(left(:,1,:), left(:,2,:));
+trainLeft  = trainFeatures(find(y_train == 1),:);
+trainRight = trainFeatures(find(y_train == 2),:);
+scatter(trainLeft(:,1), trainLeft(:,2));
 hold on 
-scatter(right(:,1,:), right(:,2,:),"filled");
+scatter(trainRight(:,1), trainRight(:,2),"filled");
+title('The Feature Space of Training Data');
+legend('left', 'right');
+%% -------------------------------------------
+
+%% ----------------- Testing Stage -------------
+%% Extract Features of testing Data 
+testFeatures = processData(x_test, ti, tf, Fs, FL, FH, filterOrder);
+
+%% Classification
+k = 3;
+testClasses = classifyTrails(trainFeatures, y_train, testFeatures, k);
