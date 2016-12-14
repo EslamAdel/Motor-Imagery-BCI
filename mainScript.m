@@ -56,3 +56,10 @@ else
 finalClasses(i) = 2;
 end
 end
+[maxITR, I, ERR]=criteria(outputData, finalClasses);
+
+figure,
+plot(abs(I),'b');
+hold on
+plot(ERR, 'r');
+legend('MI', 'ERR');
