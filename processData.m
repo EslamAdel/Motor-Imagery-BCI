@@ -1,4 +1,4 @@
-function features = processData(inData, ti, tf, Fs, FL, FH, filterOrder);
+function features = processData(inData, ti, tf, Fs, FL, FH, windowType);
 %% Process input Data to Extract features 
 % 1 - Remove Cz channel 
 % 2 - Process Only Signal From t = 3 sec to t = 9 sec
@@ -13,7 +13,7 @@ function features = processData(inData, ti, tf, Fs, FL, FH, filterOrder);
 % Fs : sampling frequency 
 % FL : lower frequency of bandpass filter 
 % FH : upper frequency 
-% filterOrder : order of butterworth filter 
+% windowType : type of window for FIR filter design.
 % output : 
 % features : the extracted features of each window, features are the 
 % energy of both C3 and C4 channels of each window.
@@ -48,7 +48,7 @@ for i = 0:round(signalLength/windowLength)-1
   subSignal = inData(i*windowLength+1:sigTo,:,:);
   
   %% Apply bandpass filter 
-  subSignal = filterSignals(subSignal, 'hanning', Fs, FL, FH, filterOrder);
+  subSignal = filterSignals(subSignal, windowType, Fs, FL, FH);
   
   %% Extract Features
   features(:,:,i+1) = extractFeatures(subSignal);

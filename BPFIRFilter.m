@@ -10,8 +10,11 @@ function b = BPFIRFilter(N, FL,FH, Fs, windowType)
 % output : 
 % b : filter Coefficients
 
-%% Mid Point 
-M = round((N-1)/2);
+%% Mid Point
+if mod(N,2) == 0
+N = N+1;
+end 
+M = (N-1)/2;
 
 %% Convert to rad/sec and normalization.
 WH = FH*2*pi/Fs;
