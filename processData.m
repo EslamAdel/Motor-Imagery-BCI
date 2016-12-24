@@ -34,23 +34,26 @@ windowLength = Fs;
 %% Intialize features matrix
 features = zeros(t,c,round(signalLength/windowLength));
 
+idx = 0;
 %% Extract Features For each window of the signal
-for i = 0:round(signalLength/windowLength)-1
+for i = 0:0.1:round(signalLength/windowLength)-1
 
   %% Check for last window to avoid error index
+  sigOf = round(i*windowLength+1)
   if (i+1)*windowLength > signalLength
     sigTo = signalLength;
   else
-    sigTo = (i+1)*windowLength;
+    sigTo = round((i+1)*windowLength);
   end
   
   %% Extract a window 
-  subSignal = inData(i*windowLength+1:sigTo,:,:);
+  subSignal = inData(sigOf:sigTo,:,:);
   
   %% Apply bandpass filter 
   subSignal = filterSignals(subSignal, windowType, Fs, FL, FH);
+  idx = idx + 1;
   
   %% Extract Features
-  features(:,:,i+1) = extractFeatures(subSignal);
+  features(:,:,idx) = extractFeatures(subSignal);
   end
 end

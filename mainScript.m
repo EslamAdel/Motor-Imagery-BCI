@@ -47,12 +47,10 @@ trainFeatures = processData(x_train,ti, tf, Fs, FL, FH, windowType);
 
 %% ----------------- Testing Stage -------------
 %% Classification
-k = 3;
+k = 7;
 w = Fs;
 testFeatures = processData(x_test,ti, tf, Fs, FL, FH, windowType);
-x = testFeatures(:,1,:);
-y = testFeatures(:,2,:);
-[trials, channels, numWindows] = size(testeatures);
+[trials, channels, numWindows] = size(testFeatures);
 dataOutput = zeros(trials, numWindows);
 for i = 1:trials
 for j = 1:numWindows
@@ -61,4 +59,10 @@ class = classifyTrails(trainFeatures, y_train, point,k);
 dataOutput(i,j) = class;
 end 
 end 
+
+finalClass = mode(dataOutput,2);
+finalClass(find(finalClass > 0)) = 2;
+finalClass(find(finalClass < 0)) = 1;
+
+
 
