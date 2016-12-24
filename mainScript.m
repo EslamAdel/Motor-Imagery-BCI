@@ -15,6 +15,10 @@ T = 9;
 ti = 3;
 tf = 9;
 
+%% Window Size ans Step 
+wSize = Fs;
+wStep = 0.1;
+
 %% Filter Specs  
 FL = 5;
 FH = 15;
@@ -22,7 +26,7 @@ windowType = 'blackman';
 
 %% --------------- Training Stage ----------
 
-trainFeatures = processData(x_train,ti, tf, Fs, FL, FH, windowType);
+trainFeatures = processData(x_train,ti, tf, Fs, FL, FH, windowType, wSize, wStep);
  %%Plot Feature Space
  trainLeft  = trainFeatures(find(y_train == 1),:,:);
  trainRight = trainFeatures(find(y_train == 2),:,:);
@@ -47,9 +51,9 @@ trainFeatures = processData(x_train,ti, tf, Fs, FL, FH, windowType);
 
 %% ----------------- Testing Stage -------------
 %% Classification
-k = 7;
+k = 11;
 w = Fs;
-testFeatures = processData(x_test,ti, tf, Fs, FL, FH, windowType);
+testFeatures = processData(x_test,ti, tf, Fs, FL, FH, windowType, wSize, wStep);
 [trials, channels, numWindows] = size(testFeatures);
 dataOutput = zeros(trials, numWindows);
 for i = 1:trials
@@ -64,5 +68,17 @@ finalClass = mode(dataOutput,2);
 finalClass(find(finalClass > 0)) = 2;
 finalClass(find(finalClass < 0)) = 1;
 
+%% Calculate Matual information and Error rate 
+[MI, I, ERR] = criteria(dataOutput, finalClass);
 
+%% plot Matual information and ERR 
+t = ti:(tf-ti)/length(I):tf - (tf-ti)/length(I);
+
+figure, 
+plot(t,I,'b', 'linewidth', 1.5);
+xlabel('Time in Second')
+ylabel('Value')
+hold on
+plot(t,ERR,'r', 'linewidth', 1.5);
+legend('MI', 'ERR');
 

@@ -1,4 +1,5 @@
-function features = processData(inData, ti, tf, Fs, FL, FH, windowType);
+function features = processData(inData, ti, tf, Fs, FL, FH, windowType, ... 
+                                 windowLength, wStep);
 %% Process input Data to Extract features 
 % 1 - Remove Cz channel 
 % 2 - Process Only Signal From t = 3 sec to t = 9 sec
@@ -28,18 +29,15 @@ inData = inData(Fs*ti:Fs*tf,:,:);
 %% Get size of data 
 [signalLength,c,t] = size(inData);
 
-%% window lengh = 1 sec 
-windowLength = Fs;
-
 %% Intialize features matrix
 features = zeros(t,c,round(signalLength/windowLength));
 
 idx = 0;
 %% Extract Features For each window of the signal
-for i = 0:0.1:round(signalLength/windowLength)-1
+for i = 0:wStep:round(signalLength/windowLength)-1
 
   %% Check for last window to avoid error index
-  sigOf = round(i*windowLength+1)
+  sigFrom = round(i*windowLength+1);
   if (i+1)*windowLength > signalLength
     sigTo = signalLength;
   else
@@ -47,7 +45,7 @@ for i = 0:0.1:round(signalLength/windowLength)-1
   end
   
   %% Extract a window 
-  subSignal = inData(sigOf:sigTo,:,:);
+  subSignal = inData(sigFrom:sigTo,:,:);
   
   %% Apply bandpass filter 
   subSignal = filterSignals(subSignal, windowType, Fs, FL, FH);
