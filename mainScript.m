@@ -12,17 +12,17 @@ Fs = 128;
 T = 9;
 
 %% Desired interval
-ti = 3;
-tf = 9;
+ti = 4;
+tf = 8;
 
 %% Window Size ans Step 
 wSize = Fs;
-wStep = 0.05;
+wStep = 0.01;
 
 %% Filter Specs  
 FL = 5;
 FH = 15;
-windowType = 'blackman';
+windowType = 'hamming';
 
 %% --------------- Training Stage ----------
 
@@ -55,14 +55,18 @@ k = 15;
 w = Fs;
 testFeatures = processData(x_test,ti, tf, Fs, FL, FH, windowType, wSize, wStep);
 [trials, channels, numWindows] = size(testFeatures);
-dataOutput = zeros(trials, numWindows);
-for i = 1:trials
+trials = 100;
+dataOutput = zeros(trials/2, numWindows);
+h = waitbar(0,'Please Wait ..');
+for i = 50:trials
+waitbar(i/trials)
 for j = 1:numWindows
 point = testFeatures(i,:,j);
 class = classifyTrails(trainFeatures, y_train, point,k);
-dataOutput(i,j) = class;
+dataOutput(i-49,j) = class;
 end 
 end 
+close(h)
 
 finalClass = mode(dataOutput,2);
 finalClass(find(finalClass > 0)) = 2;
@@ -76,9 +80,11 @@ t = ti:(tf-ti)/length(I):tf - (tf-ti)/length(I);
 
 figure, 
 plot(t,I,'b', 'linewidth', 1.5);
+axis([ti tf 0 max(I)]);
 xlabel('Time in Second')
 ylabel('Matual information and Error rate')
 hold on
 plot(t,ERR,'r', 'linewidth', 1.5);
+axis([ti tf 0 max(I)]);
 legend('MI', 'ERR');
 
