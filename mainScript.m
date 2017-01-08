@@ -16,12 +16,12 @@ ti = 3;
 tf = 9;
 
 %% Window Size and Step 
-wSize = 4; % in seconds
-wStep = 0.05; % in seconds 
+wSize = 3; % in seconds
+wStep = 0.1; % in seconds 
 
 %% Filter Specs  
-FL = 7;
-FH = 13;
+FL = 7.5;
+FH = 15;
 windowType = 'hamming';
 
 %% --------------- Training Stage ----------
@@ -43,7 +43,7 @@ trainFeatures = processData(x_train,ti, tf, Fs, FL, FH, windowType, wSize, wStep
  
  rightClass = [xR(:) yR(:)];
  plot(rightClass(:,1), rightClass(:,2),'bo','linewidth',1.5);
- title('The Feature Space of Training Data');
+ title(['The Feature Space of Training Data window Size = ' num2str(wSize) ' sec']);
  xlabel('Energy of C3'), ylabel('Energy of C4');
  legend('left', 'right');
 
@@ -79,6 +79,7 @@ t = ti:(tf-ti)/length(I):tf - (tf-ti)/length(I);
 
 figure, 
 plot(t,I,'b', 'linewidth', 1.5);
+title(['Mutual information and Error rate k = ' num2str(k) ' .']);
 xlabel('Time in Second')
 ylabel('Matual information and Error rate')
 hold on
