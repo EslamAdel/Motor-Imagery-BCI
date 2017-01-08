@@ -1,20 +1,24 @@
 function features = processData(inData, ti, tf, Fs, FL, FH, windowType, ... 
                                  windowLength, wStep);
-%% Process input Data to Extract features 
+%% features = processData(inData, ti, tf, Fs, FL, FH, windowType, ... 
+%                                 windowLength, wStep);
+% Process input Data to Extract features 
 % 1 - Remove Cz channel 
-% 2 - Process Only Signal From t = 3 sec to t = 9 sec
-% 3 - Get a window of 1 sec of the signal 
+% 2 - Process Only Signal From ti to tf.
+% 3 - Get a window of windowLength (in seconds).
 % 4 - Band pass Filter to extract mu band only.
 % 5 - Extract Features of each window.
 % 6 - update feature space
 % input : 
-% inData : original dataset (x_train and x_test)
-% ti : starting time for processing 
-% tf : ending time for processing 
+% inData : original dataset (x_train or x_test)
+% ti : starting time for processing. 
+% tf : ending time for processing. 
 % Fs : sampling frequency 
-% FL : lower frequency of bandpass filter 
-% FH : upper frequency 
+% FL : lower frequency of bandpass filter. 
+% FH : upper frequency. 
 % windowType : type of window for FIR filter design.
+% windowLength: Length of window from signal in seconds.
+% wStep : Step or jump for the window in seconds
 % output : 
 % features : the extracted features of each window, features are the 
 % energy of both C3 and C4 channels of each window.
@@ -23,29 +27,42 @@ function features = processData(inData, ti, tf, Fs, FL, FH, windowType, ...
 %% Remove Cz channel
 inData(:,2,:) = [];
 
-%% Take Signals From t = 3 sec to t = 9 sec 
-inData = inData(Fs*ti:Fs*tf,:,:);
+% convert step from seconds to actual number of samples
+wStep = round(wStep*Fs);
+
+if wStep  < 1 
+    wStep = 1;
+end
+
+% convert windowLength from seconds to actual number of samples
+windowLength = round(windowLength * Fs);
+
+%% Take Signals From ti to tf
+inData = inData(1+Fs*ti:Fs*tf,:,:);
 
 %% Get size of data 
 [signalLength,c,t] = size(inData);
 
 %% Intialize features matrix
-features = zeros(t,c,round(signalLength/windowLength));
+
+
+r = 1:wStep:signalLength-windowLength;
+features = zeros(t,c,length(r));
 
 idx = 0;
 %% Extract Features For each window of the signal
-for i = 0:wStep:round(signalLength/windowLength)-1
+for i = r(1:end)
 
   %% Check for last window to avoid error index
-  sigFrom = round(i*windowLength+1);
-  if (i+1)*windowLength > signalLength
+  sigFrom = i;
+  if i+windowLength > signalLength
     sigTo = signalLength;
   else
-    sigTo = round((i+1)*windowLength);
+    sigTo = i+windowLength;
   end
-  
+  range = sigFrom:sigTo;
   %% Extract a window 
-  subSignal = inData(sigFrom:sigTo,:,:);
+  subSignal = inData(range,:,:);
   
   %% Apply bandpass filter 
   subSignal = filterSignals(subSignal, windowType, Fs, FL, FH);
