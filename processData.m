@@ -44,8 +44,6 @@ inData = inData(1+Fs*ti:Fs*tf,:,:);
 [signalLength,c,t] = size(inData);
 
 %% Intialize features matrix
-
-
 r = 1:wStep:signalLength-windowLength;
 features = zeros(t,c,length(r));
 

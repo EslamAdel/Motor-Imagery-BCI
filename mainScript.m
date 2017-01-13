@@ -51,8 +51,7 @@ trainFeatures = processData(x_train,ti, tf, Fs, FL, FH, windowType, wSize, wStep
 
 %% ----------------- Testing Stage -------------
 %% Classification
-k = 15;
-w = Fs;
+k = 11;
 testFeatures = processData(x_test,ti, tf, Fs, FL, FH, windowType, wSize, wStep);
 [trials, channels, numWindows] = size(testFeatures);
 dataOutput = zeros(trials, numWindows);
@@ -68,8 +67,8 @@ end
 close(h)
 
 finalClass = mode(dataOutput,2);
-finalClass(find(finalClass > 0)) = 2;
-finalClass(find(finalClass < 0)) = 1;
+finalClass(find(finalClass > 0)) = 1;
+finalClass(find(finalClass < 0)) = -1;
 
 %% Calculate Matual information and Error rate 
 [MIT, I, ERR] = criteria(dataOutput, finalClass);
