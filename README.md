@@ -25,8 +25,7 @@ Real-time classification of motor imagery EEG signal using BCI competition II Da
 * For each window of the signal the energy of C3 and C4 channels is calculated using following
 equation
 
-<img src="https://render.githubusercontent.com/render/math?math=Es = \sum_{n=0}^{N-1} s(n)^2">
-
+$$Es = \sum_{n=0}^{N-1} s(n)^2$$
 * Feature Space of the training data using different window length
 
 |                     |                    |
@@ -42,9 +41,9 @@ equation
 
 * Mutual Information (MI) and error rate (ERR)
 
-<img src="https://render.githubusercontent.com/render/math?math=MI = \frac{1}{2}log(1+SNR)"> 
+$$MI = \frac{1}{2}log(1+SNR)$$ 
 
-<img src="https://render.githubusercontent.com/render/math?math=SNR = \frac{\sigma_{signal}^2}{\sigma_{noise}^2}">
+$$SNR = \frac{\sigma_{signal}^2}{\sigma_{noise}^2}$$
 
 ## Results
 
